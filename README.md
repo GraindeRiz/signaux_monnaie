@@ -32,15 +32,40 @@ Garder une image de chaque étape : elle servira à vérifier le traitement et �
 
 ### Étape 01 — Installer et organiser le projet
 
-- [ ] Créer l'environnement et installer les bibliothèques :
+- [ ] Créer l'environnement et installer les bibliothèques depuis `requirements.txt` :
+
+  ```powershell
+  # Windows (PowerShell)
+  py -m venv .venv
+  ```
 
   ```bash
-  python -m venv .venv
-  # Windows (PowerShell) :  .venv\Scripts\Activate.ps1
-  # macOS / Linux :         source .venv/bin/activate
-  python -m pip install jupyterlab numpy scipy scikit-image matplotlib
+  # macOS / Linux
+  python3 -m venv .venv
+  ```
+
+  Activer l'environnement :
+
+  ```powershell
+  # Windows (PowerShell)
+  .venv\Scripts\Activate.ps1
+  ```
+
+  ```bash
+  # macOS / Linux
+  source .venv/bin/activate
+  ```
+
+  Puis installer les dépendances et enregistrer le noyau Jupyter :
+
+  ```bash
+  python -m pip install --upgrade pip
+  python -m pip install -r requirements.txt
+  python -m ipykernel install --user --name signaux-monnaie --display-name "Python (signaux_monnaie)"
   jupyter lab
   ```
+
+  Sous Windows, exécuter uniquement les commandes PowerShell (ne pas exécuter `source`). Si PowerShell bloque l'activation, lancer `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`, puis réessayer. Pour vérifier que l'installation utilise le bon Python : `python -c "import numpy, scipy, skimage, matplotlib; print('Environnement prêt')"`.
 
 - [X] Créer le notebook (`main.ipynb`)
 - [ ] Créer les dossiers `images/calibration/`, `images/test/` et `resultats/`
