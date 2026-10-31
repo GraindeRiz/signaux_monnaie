@@ -12,7 +12,6 @@ def detecter_contours(image):
 
     for i in range(ligne-distance):
         for j in range(colonne-distance):
-            img_contours[i,j] = np.sqrt((image[i,j] - image[i,j+distance])**2+(image[i,j] - image[i+distance,j])**2
-    ) 
+            img_contours[i,j] = np.sqrt((image[i,j] - image[i,j+distance])**2+(image[i,j] - image[i+distance,j])**2) 
 
     return img_contours
