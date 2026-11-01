@@ -1,17 +1,18 @@
-"""Détection des contours dans une image en niveaux de gris."""
+"""Détection des contours dans une image grise, binaire ou labellisée."""
 
 import numpy as np
-import matplotlib.pyplot as plt
-from skimage.io import imread
-from skimage.color import rgb2gray
+from skimage.filters import sobel
+from skimage.segmentation import find_boundaries
 
-def detecter_contours(image):
-    distance = 3
-    ligne, colonne = image.shape
-    img_contours = np.zeros_like(image)
 
-    for i in range(ligne-distance):
-        for j in range(colonne-distance):
-            img_contours[i,j] = np.sqrt((image[i,j] - image[i,j+distance])**2+(image[i,j] - image[i+distance,j])**2) 
+def detecter_contours(image, image_labellee=False):
+    """Renvoie les frontières d'un masque ou le gradient d'une image grise."""
+    image = np.asarray(image)
+    if image.ndim != 2:
+        raise ValueError("L'image doit être en niveaux de gris ou binaire.")
 
-    return img_contours
+    est_binaire = image.dtype == bool or np.all((image == 0) | (image == 1))
+    if image_labellee or est_binaire:
+        return find_boundaries(image, mode="inner")
+
+    return sobel(image)
