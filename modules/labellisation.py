@@ -38,3 +38,8 @@ def mesurer_objets(image_labellisee,image_originale):
             "Couleur": couleur,
             })
     return tab
+
+def liste_aires(tab):
+    for i in tab:
+        for cle, valeur in i.items():
+            print(valeur)

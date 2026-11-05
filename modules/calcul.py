@@ -1,12 +1,28 @@
-"""
-Ce tableau a été généré par IA, juste par souci de facilité.
+"""Aires de référence mesurées sur la photo euro-61.jpeg."""
 
-
-"""
-# diamètre en pixels de chaque pièce
-DIAMETRES_PX = {
-    "Cuivre":   {0.01: 337, 0.02: 389, 0.05: 441},
-    "Dorée":    {0.1: 410, 0.2: 462, 0.5: 503},
-    "Bicolore": {1: 482, 2: 534},
+# Les montants sont en centimes et les aires en pixels carrés.
+AIRES_PAR_MONTANT = {
+    1: [94_635],
+    2: [120_794],
+    5: [148_461],
+    50: [198_659],
+    200: [220_329],
 }
 
+
+def identifier_piece(aire):
+    ecart_max = 5001
+    meilleur_ecart = float("inf")
+    meilleur_montant = None
+    
+
+    for montant, aire_reference in AIRES_PAR_MONTANT.items():
+        ecart = abs(aire - aire_reference[0])
+        if ecart < meilleur_ecart:
+            meilleur_ecart = ecart 
+            meilleur_montant = montant
+
+    if meilleur_ecart > ecart_max:
+        raise ValueError("Pièce inconnue")    
+
+    return meilleur_montant 
