@@ -14,21 +14,35 @@ def compter_objets(image_labellisee):
     return int(np.max(image_labellisee))
 
 def mesurer_objets(image_labellisee,image_originale):
+    """Mesure les objets et estime leur couleur par teinte et saturation."""
     data = measure.regionprops(image_labellisee)
     image_HSV = rgb2hsv(image_originale)
     tab=[]
     for i in data:
         lignes = i.coords[:,0]
         colonnes = i.coords[:,1]
-        teinte_piece = image_HSV[lignes,colonnes,0]
-        teinte_piece = np.median(teinte_piece)
-        teinte_degres = teinte_piece *360
-        if teinte_degres < 25:
+        pixels_hsv = image_HSV[lignes, colonnes]
+        teinte_degres = np.median(pixels_hsv[:, 0]) * 360
+
+        # Comparer le centre et un anneau à l'intérieur du masque.
+        cy, cx = i.centroid
+        distances = np.hypot(lignes - cy, colonnes - cx)
+        rayon = np.sqrt(i.area / np.pi)
+        centre = distances < 0.55 * rayon
+        bord = (distances > 0.75 * rayon) & (distances < 0.90 * rayon)
+
+        ecart_saturation = 0.0
+        if np.any(centre) and np.any(bord):
+            saturation_centre = np.median(pixels_hsv[centre, 1])
+            saturation_bord = np.median(pixels_hsv[bord, 1])
+            ecart_saturation = abs(saturation_centre - saturation_bord)
+
+        if teinte_degres < 30:
             couleur = "Cuivre"
-        elif 30 <= teinte_degres < 45:
-            couleur = "Dorée"
-        else:
+        elif ecart_saturation > 0.12:
             couleur = "Bicolor"
+        else:
+            couleur = "Dorée"
         tab.append({
            
             
@@ -38,8 +52,3 @@ def mesurer_objets(image_labellisee,image_originale):
             "Couleur": couleur,
             })
     return tab
-
-def liste_aires(tab):
-    for i in tab:
-        for cle, valeur in i.items():
-            print(valeur)
